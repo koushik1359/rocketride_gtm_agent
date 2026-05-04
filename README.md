@@ -1,12 +1,12 @@
 # RocketRide GTM Agent
 
-> **Turn a week of GitHub activity into a full marketing campaign — in 30 seconds.**
+> **Turn a week of GitHub activity into a full marketing campaign in 30 seconds.**
 
 Built as part of the RocketRide AI Growth Intern challenge. This tool solves a real problem for open-source teams: the gap between shipping great work and telling the world about it. Every week, RocketRide and projects like it generate dozens of issues, fixes, and community discussions that never get communicated beyond GitHub. This agent closes that gap automatically.
 
-Point it at any GitHub repository. In under 60 seconds, four specialized AI agents analyze the last 7 days of issue activity and produce a complete, publish-ready GTM campaign — community blog post, Twitter thread, short-form video script, and a DALL-E 3 promotional thumbnail. No templates, no manual writing. Just signal in, content out.
+Point it at any GitHub repository. In under 60 seconds, four specialized AI agents analyze the last 7 days of issue activity and produce a complete, publish-ready GTM campaign: community blog post, Twitter thread, short-form video script, and a DALL-E 3 promotional thumbnail. No templates, no manual writing. Just signal in, content out.
 
-**Live Demo → [happy-mushroom-0447b8210.7.azurestaticapps.net](https://happy-mushroom-0447b8210.7.azurestaticapps.net)**
+**Live Demo: [happy-mushroom-0447b8210.7.azurestaticapps.net](https://happy-mushroom-0447b8210.7.azurestaticapps.net)**
 
 > Try it on `rocketride-org/rocketride-server` to see it run against RocketRide's own repo.
 
@@ -19,9 +19,9 @@ Point it at any GitHub repository. In under 60 seconds, four specialized AI agen
 
 ## The Problem This Solves
 
-Open-source maintainers are builders, not marketers. Great work gets shipped every week — bug fixes, new features, community milestones — but most of it disappears into a closed GitHub issue. There's no time to write blog posts, craft Twitter threads, or produce video content on top of everything else.
+Open-source maintainers are builders, not marketers. Great work gets shipped every week (bug fixes, new features, community milestones) but most of it disappears into a closed GitHub issue. There's no time to write blog posts, craft Twitter threads, or produce video content on top of everything else.
 
-RocketRide GTM Agent automates the entire content pipeline. It reads your GitHub activity, understands what happened, and generates everything a growth team would produce manually — in the time it takes to make a coffee.
+RocketRide GTM Agent automates the entire content pipeline. It reads your GitHub activity, understands what happened, and generates everything a growth team would produce manually. In the time it takes to make a coffee.
 
 This is the kind of tooling the AI Growth Intern role is about: using agentic AI to do real work, not demos.
 
@@ -39,7 +39,7 @@ Four agents fire in sequence against your GitHub repo:
 | **Producer** | Writes a 30-second short-form video script optimized for TikTok / Reels pacing | Video script |
 | **Designer** | GPT-4o-mini describes a visual concept from the blog; DALL-E 3 renders it | Promotional thumbnail |
 
-Everything lands in a split-screen UI — full blog post on the left, socials and media stacked on the right — ready to copy and publish.
+Everything lands in a split-screen UI: full blog post on the left, socials and media stacked on the right, ready to copy and publish.
 
 ---
 
@@ -47,27 +47,27 @@ Everything lands in a split-screen UI — full blog post on the left, socials an
 
 ```
 User enters GitHub repo (owner/repo)
-        │
-        ▼
-┌─────────────────────────────────────────┐
-│         Next.js 16 Frontend            │
-│   (Azure Static Web Apps — Free tier)  │
-└─────────────────┬───────────────────────┘
-                  │  POST /api/run?repo=...
-                  ▼
-┌─────────────────────────────────────────┐
-│       FastAPI Backend (Docker)         │
-│   (Azure Container Apps — Free tier)   │
-│                                         │
-│  ┌──────────┐  ┌──────────┐            │
-│  │Copywriter│  │  Social  │            │
-│  └──────────┘  └──────────┘            │
-│  ┌──────────┐  ┌──────────┐            │
-│  │ Producer │  │ Designer │            │
-│  └──────────┘  └──────────┘            │
-└─────────────────┬───────────────────────┘
-                  │
-                  ▼
+        |
+        v
++------------------------------------------+
+|         Next.js 16 Frontend              |
+|   (Azure Static Web Apps - Free tier)    |
++------------------+-----------------------+
+                   |  POST /api/run?repo=...
+                   v
++------------------------------------------+
+|       FastAPI Backend (Docker)           |
+|   (Azure Container Apps - Free tier)     |
+|                                          |
+|  +----------+  +----------+             |
+|  |Copywriter|  |  Social  |             |
+|  +----------+  +----------+             |
+|  +----------+  +----------+             |
+|  | Producer |  | Designer |             |
+|  +----------+  +----------+             |
++------------------+-----------------------+
+                   |
+                   v
          OpenAI API (GPT-4o-mini + DALL-E 3)
 ```
 
@@ -77,22 +77,22 @@ User enters GitHub repo (owner/repo)
 
 **Frontend**
 - [Next.js 16](https://nextjs.org/) with React 19 App Router
-- [Tailwind CSS v4](https://tailwindcss.com/) — utility-first styling
-- [Framer Motion](https://www.framer.com/motion/) — animations
-- [Lucide React](https://lucide.dev/) — icons
-- [React Markdown](https://github.com/remarkjs/react-markdown) — renders the generated blog post
+- [Tailwind CSS v4](https://tailwindcss.com/) for utility-first styling
+- [Framer Motion](https://www.framer.com/motion/) for animations
+- [Lucide React](https://lucide.dev/) for icons
+- [React Markdown](https://github.com/remarkjs/react-markdown) to render the generated blog post
 
 **Backend**
-- [FastAPI](https://fastapi.tiangolo.com/) — async Python web framework
-- [Uvicorn](https://www.uvicorn.org/) — ASGI server
-- [OpenAI Python SDK v2](https://github.com/openai/openai-python) — GPT-4o-mini + DALL-E 3
-- [python-dotenv](https://github.com/theskumar/python-dotenv) — environment variable management
+- [FastAPI](https://fastapi.tiangolo.com/) async Python web framework
+- [Uvicorn](https://www.uvicorn.org/) ASGI server
+- [OpenAI Python SDK v2](https://github.com/openai/openai-python) for GPT-4o-mini and DALL-E 3
+- [python-dotenv](https://github.com/theskumar/python-dotenv) for environment variable management
 
 **Infrastructure**
-- Azure Container Apps — backend (consumption-based, no VM quota limits)
-- Azure Container Registry — Docker image storage
-- Azure Static Web Apps — frontend (free tier)
-- GitHub Actions — CI/CD, auto-deploys on every push to `master`
+- Azure Container Apps for the backend (consumption-based, no VM quota limits)
+- Azure Container Registry for Docker image storage
+- Azure Static Web Apps for the frontend (free tier)
+- GitHub Actions for CI/CD, auto-deploys on every push to `master`
 
 ---
 
@@ -111,14 +111,14 @@ rocketride_gtm_agent/
 │       └── github_client.py   # GitHub REST API wrapper
 ├── frontend/
 │   └── app/
-│       ├── page.tsx           # Main UI — input, progress, results
+│       ├── page.tsx           # Main UI: input, progress, results
 │       ├── layout.tsx         # Root layout and metadata
 │       └── globals.css        # Tailwind + custom prose styles
 ├── Dockerfile                 # Backend container definition
 ├── requirements.txt           # Python dependencies
 └── .github/workflows/
-    ├── backend-deploy.yml     # Build + push Docker image → Container Apps
-    └── azure-static-web-apps-*.yml  # Auto-deploy frontend → Static Web Apps
+    ├── backend-deploy.yml     # Build + push Docker image to Container Apps
+    └── azure-static-web-apps-*.yml  # Auto-deploy frontend to Static Web Apps
 ```
 
 ---
@@ -184,15 +184,15 @@ Fully deployed on Azure, free tier:
 
 ### CI/CD
 Every push to `master` auto-deploys:
-- `backend/**` or `Dockerfile` changed → Docker image built → pushed to ACR → Container App updated
-- `frontend/**` changed → Next.js built with env vars → deployed to Static Web Apps
+- Changes to `backend/` or `Dockerfile` trigger a Docker build, push to ACR, and Container App update
+- Changes to `frontend/` trigger a Next.js build with env vars and deploy to Static Web Apps
 
 ---
 
 ## Why I Built This
 
-Joe's brief was clear: the AI Growth Intern role is about using agentic AI to automate GTM workflows — community engagement, content generation, and making it easy for open-source teams to tell their story.
+Joe's brief was clear: the AI Growth Intern role is about using agentic AI to automate GTM workflows, covering community engagement, content generation, and making it easy for open-source teams to tell their story.
 
-This is my answer to that brief. Not a prototype, not a mockup — a fully deployed, production-ready tool that does real work on real data. It runs against any GitHub repo, generates content that a real dev advocate would be proud to publish, and ships the whole pipeline to Azure in under a minute via GitHub Actions.
+This is my answer to that brief. Not a prototype, not a mockup. A fully deployed, production-ready tool that does real work on real data. It runs against any GitHub repo, generates content a real dev advocate would be proud to publish, and ships the whole pipeline to Azure in under a minute via GitHub Actions.
 
-The skills this demonstrates — multi-agent orchestration, LLM API integration, full-stack development, cloud deployment, and GTM automation — are exactly what the role calls for. I'm ready to bring this energy to RocketRide's actual growth workflows from day one.
+The skills this demonstrates: multi-agent orchestration, LLM API integration, full-stack development, cloud deployment, and GTM automation. I'm ready to bring this to RocketRide's actual growth workflows from day one.
