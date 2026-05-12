@@ -1,0 +1,56 @@
+﻿{
+	"components": [
+		{
+			"id": "chat_1",
+			"provider": "chat",
+			"config": { "hideForm": true, "mode": "Source", "parameters": {}, "type": "chat" },
+			"ui": { "position": { "x": 20, "y": 200 }, "measured": { "width": 150, "height": 66 }, "nodeType": "default", "formDataValid": true }
+		},
+		{
+			"id": "agent_rocketride_1",
+			"provider": "agent_rocketride",
+			"config": {
+				"instructions": [
+					"You are a social media strategist for an open-source developer tool. You will receive a Markdown blog post summarizing a week of GitHub activity. Your job is to write a compelling 5-tweet Twitter/X thread that: opens with a strong hook tweet that makes developers stop scrolling, distills the 3-4 most interesting updates into individual tweets with context, and closes with a call-to-action tweet linking to the project. Each tweet must be under 280 characters. Separate tweets with a blank line and number them (1/5, 2/5, etc.). Output only the thread, no preamble."
+				],
+				"max_waves": 5,
+				"parameters": {}
+			},
+			"input": [{ "lane": "questions", "from": "chat_1" }],
+			"ui": { "position": { "x": 240, "y": 200 }, "measured": { "width": 150, "height": 86 }, "nodeType": "default", "formDataValid": true }
+		},
+		{
+			"id": "llm_openai_1",
+			"provider": "llm_openai",
+			"config": {
+				"profile": "openai-4o-mini",
+				"openai-4o-mini": { "apikey": "${ROCKETRIDE_OPENAI_KEY}" },
+				"parameters": {}
+			},
+			"control": [
+				{ "classType": "llm", "from": "agent_rocketride_1" }
+			],
+			"ui": { "position": { "x": 240, "y": 380 }, "measured": { "width": 150, "height": 66 }, "nodeType": "default", "formDataValid": true }
+		},
+		{
+			"id": "memory_internal_1",
+			"provider": "memory_internal",
+			"config": { "type": "memory_internal" },
+			"control": [
+				{ "classType": "memory", "from": "agent_rocketride_1" }
+			],
+			"ui": { "position": { "x": 100, "y": 380 }, "measured": { "width": 150, "height": 66 }, "nodeType": "default", "formDataValid": true }
+		},
+		{
+			"id": "response_answers_1",
+			"provider": "response_answers",
+			"config": { "laneName": "answers" },
+			"input": [{ "lane": "answers", "from": "agent_rocketride_1" }],
+			"ui": { "position": { "x": 460, "y": 200 }, "measured": { "width": 150, "height": 66 }, "nodeType": "default", "formDataValid": true }
+		}
+	],
+	"project_id": "a1b2c3d4-e5f6-4890-abcd-ef1234567802",
+	"viewport": { "x": 0, "y": 0, "zoom": 1 },
+	"version": 1
+}
+

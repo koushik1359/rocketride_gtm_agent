@@ -1,0 +1,56 @@
+﻿{
+	"components": [
+		{
+			"id": "chat_1",
+			"provider": "chat",
+			"config": { "hideForm": true, "mode": "Source", "parameters": {}, "type": "chat" },
+			"ui": { "position": { "x": 20, "y": 200 }, "measured": { "width": 150, "height": 66 }, "nodeType": "default", "formDataValid": true }
+		},
+		{
+			"id": "agent_rocketride_1",
+			"provider": "agent_rocketride",
+			"config": {
+				"instructions": [
+					"You are a short-form video producer for a developer-focused YouTube and TikTok channel. You will receive a Markdown blog post about a week of open-source project activity. Your job is to write a 30-second video script optimized for TikTok and Instagram Reels pacing. The script must: open with a hook in the first 3 seconds that creates curiosity, cover 2-3 key updates with punchy one-sentence explanations, use conversational language as if talking directly to a developer, and end with a clear call to action. Format the output as a script with [VISUAL] cues and spoken lines clearly separated. Output only the script, no preamble."
+				],
+				"max_waves": 5,
+				"parameters": {}
+			},
+			"input": [{ "lane": "questions", "from": "chat_1" }],
+			"ui": { "position": { "x": 240, "y": 200 }, "measured": { "width": 150, "height": 86 }, "nodeType": "default", "formDataValid": true }
+		},
+		{
+			"id": "llm_openai_1",
+			"provider": "llm_openai",
+			"config": {
+				"profile": "openai-4o-mini",
+				"openai-4o-mini": { "apikey": "${ROCKETRIDE_OPENAI_KEY}" },
+				"parameters": {}
+			},
+			"control": [
+				{ "classType": "llm", "from": "agent_rocketride_1" }
+			],
+			"ui": { "position": { "x": 240, "y": 380 }, "measured": { "width": 150, "height": 66 }, "nodeType": "default", "formDataValid": true }
+		},
+		{
+			"id": "memory_internal_1",
+			"provider": "memory_internal",
+			"config": { "type": "memory_internal" },
+			"control": [
+				{ "classType": "memory", "from": "agent_rocketride_1" }
+			],
+			"ui": { "position": { "x": 100, "y": 380 }, "measured": { "width": 150, "height": 66 }, "nodeType": "default", "formDataValid": true }
+		},
+		{
+			"id": "response_answers_1",
+			"provider": "response_answers",
+			"config": { "laneName": "answers" },
+			"input": [{ "lane": "answers", "from": "agent_rocketride_1" }],
+			"ui": { "position": { "x": 460, "y": 200 }, "measured": { "width": 150, "height": 66 }, "nodeType": "default", "formDataValid": true }
+		}
+	],
+	"project_id": "a1b2c3d4-e5f6-4890-abcd-ef1234567803",
+	"viewport": { "x": 0, "y": 0, "zoom": 1 },
+	"version": 1
+}
+

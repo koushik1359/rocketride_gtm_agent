@@ -1,36 +1,14 @@
-import json
-from openai import OpenAI
+from backend.services.rocketride_pipeline import run_pipeline
 
 
-def write_twitter_thread(client: OpenAI, issues: list, repo_name: str) -> str:
+async def write_twitter_thread(blog_post: str, repo_name: str) -> str:
     """
-    Generates a 5-tweet thread highlighting this week's community activity.
-    Returns the thread as numbered text.
+    Runs the social RocketRide pipeline with the generated blog post.
+    Returns a numbered 5-tweet thread.
     """
-    issue_summary = json.dumps(issues, indent=2)
+    prompt = f"""Repository: {repo_name}
 
-    prompt = f"""Write a 5-tweet thread for X (Twitter) about this week's 
-community activity on the open-source project "{repo_name}".
+Weekly community blog post:
+{blog_post}"""
 
-Rules:
-- Tweet 1: Hook — something attention-grabbing about the project's momentum
-- Tweets 2-4: Each highlights one interesting issue or discussion, include the URL
-- Tweet 5: CTA — invite developers to star the repo and contribute
-- Each tweet must be under 280 characters
-- Use 1-2 relevant emojis per tweet, don't overdo it
-- Write like an excited developer, not a marketing intern
-- Number each tweet like "1/" "2/" etc.
-
-Issue data:
-{issue_summary}"""
-
-    resp = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "You write punchy, authentic dev tweets. No hashtag spam."},
-            {"role": "user", "content": prompt},
-        ],
-        temperature=0.8,
-    )
-
-    return resp.choices[0].message.content
+    return await run_pipeline("social", prompt)

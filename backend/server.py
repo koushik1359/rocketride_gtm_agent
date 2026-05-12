@@ -1,7 +1,7 @@
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from openai import OpenAI
+from openai import AsyncOpenAI
 from dotenv import load_dotenv
 
 from backend.services.github_client import fetch_issues
@@ -12,9 +12,8 @@ from backend.agents.designer import generate_thumbnail
 
 load_dotenv()
 
-app = FastAPI(title="RocketRide GTM Command Center")
+app = FastAPI(title="RocketRide GTM Agent")
 
-# Comma-separated list of allowed origins; set FRONTEND_URL in Azure App Settings
 _raw_origins = os.getenv("FRONTEND_URL", "http://localhost:3000")
 allowed_origins = [o.strip() for o in _raw_origins.split(",")]
 
@@ -25,7 +24,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# AsyncOpenAI client used only for DALL-E 3 thumbnail generation
+openai_client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 DEFAULT_REPO = "rocketride-org/rocketride-server"
 
@@ -36,21 +36,29 @@ def health():
 
 
 @app.post("/api/run")
-def run_agents(repo: str = DEFAULT_REPO):
+async def run_agents(repo: str = DEFAULT_REPO):
     """
-    Main endpoint. Fetches GitHub data, runs all 4 agents,
-    and returns the full campaign payload.
+    Main endpoint. Fetches GitHub issue data, runs 4 RocketRide pipelines
+    in sequence, and returns the full GTM campaign payload.
+
+    Pipeline execution order:
+      1. copywriter.pipe  — generates the weekly community blog post
+      2. social.pipe      — distils the blog into a 5-tweet thread
+      3. producer.pipe    — writes a 30-second short-form video script
+      4. designer.pipe    — produces a DALL-E 3 image prompt; DALL-E renders it
     """
-    # step 1: gather data
+    # Step 1: fetch GitHub activity
     issues = fetch_issues(repo)
 
-    # step 2: run the text agents
-    blog = write_blog_post(client, issues, repo)
-    thread = write_twitter_thread(client, issues, repo)
-    script = write_video_script(client, issues, repo)
+    # Step 2: copywriter pipeline → blog post
+    blog = await write_blog_post(issues, repo)
 
-    # step 3: generate the thumbnail from the blog content
-    image_url = generate_thumbnail(client, blog, repo)
+    # Step 3: social + producer pipelines take the blog as input
+    thread = await write_twitter_thread(blog, repo)
+    script = await write_video_script(blog, repo)
+
+    # Step 4: designer pipeline → image concept → DALL-E 3 render
+    image_url = await generate_thumbnail(openai_client, blog, repo)
 
     return {
         "repo": repo,
